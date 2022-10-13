@@ -31,6 +31,7 @@ def background_thread():
 def index():
     return render_template('index.html', async_mode=socketio.async_mode)
 
+# todo -- move board to separate class
 board = [[0,0,0],[0,0,0],[0,0,0]]
 
 # @app.route('/place')
@@ -118,10 +119,16 @@ def connect():
             thread = socketio.start_background_task(background_thread)
     emit('my_response', {'data': 'Connected', 'count': 0})
 
-# LEFT-OFF : Receives this message! Go from here.
 @socketio.on('ping')
 def test_ping():
-    print('PING')
+    emit('pong', {'data': 'test'})
+
+@socketio.on('set_name')
+def set_username(message):
+    print('****set_name')
+    print(message)
+    emit('set_player', {'side': 'X'})
+    emit('update_msg', {'msg': 'Welcome, '+message['name']})
 
 @socketio.on('disconnect')
 def test_disconnect():
