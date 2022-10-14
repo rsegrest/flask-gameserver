@@ -1,9 +1,10 @@
+TODO: Display: X = [player1] / O = [player2]
 TODO: Message to signal game start
-TODO: Message to change turn
-TODO: Message to tx / rx moves
-TODO: Message to send board
 
 TODO: Prettier messages
 TODO: Messages have roomname
 
 DONE: Message to assign side x/o
+DONE: Message to tx / rx moves
+DONE: Message to send board
+DONE: Message to change turn

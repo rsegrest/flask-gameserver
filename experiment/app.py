@@ -33,6 +33,8 @@ def index():
 
 # todo -- move board to separate class
 board = [[0,0,0],[0,0,0],[0,0,0]]
+playerX = None
+playerO = None
 
 # @app.route('/place')
 
@@ -82,6 +84,26 @@ def on_close_room(message):
          to=message['room'])
     close_room(message['room'])
 
+currentTurn = 'X'
+def changeTurn():
+    global currentTurn
+    if currentTurn == 'X':
+        currentTurn = 'O'
+    else:
+        currentTurn = 'X'
+
+@socketio.on('move')
+def move(message):
+    # print("*****MOVE*****")
+    # board = [[0,0,0],[0,0,0],[0,0,0]]
+    spacenum = message['move']
+    row = spacenum // 3
+    col = spacenum % 3
+    board[row][col] = 1
+    emit('board_update', {'board': board}, broadcast=True)
+    changeTurn()
+    emit('change_turn', {'turn': currentTurn}, broadcast=True)
+    # print(message)
 
 @socketio.event
 def my_room_event(message):
@@ -127,8 +149,14 @@ def test_ping():
 def set_username(message):
     print('****set_name')
     print(message)
-    emit('set_player', {'side': 'X'})
-    emit('update_msg', {'msg': 'Welcome, '+message['name']})
+    name = message['name']
+    if (playerX == None):
+        playerX = name
+        emit('set_player', {'side': 'X'})
+    elif (playerO == None):
+        playerO = name
+        emit('set_player', {'side': 'O'})
+    emit('update_msg', {'msg': 'Welcome, '+name})
 
 @socketio.on('disconnect')
 def test_disconnect():
