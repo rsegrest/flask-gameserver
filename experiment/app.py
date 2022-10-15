@@ -1,18 +1,47 @@
 from threading import Lock
 from flask import Flask, render_template, session, request, \
     copy_current_request_context
+# from flask.ext.socketio import SocketIO, emit, join_room, leave_room, \
+#     close_room, rooms, disconnect
+# from flask.ext.cors import CORS
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
-import flask_cors
+from flask_cors import CORS
+
+
+#you may not need all these options
+# from flask import Flask, render_template, request
+# from flask.ext.socketio import SocketIO, emit, join_room, leave_room
+# from flask.ext.cors import CORS
+
+
+
+app = Flask(__name__, template_folder='./', static_folder='./', static_url_path='')
+app.config['SECRET_KEY'] = 'some-super-secret-key'
+app.config['DEFAULT_PARSERS'] = [
+    'flask.ext.api.parsers.JSONParser',
+    'flask.ext.api.parsers.URLEncodedParser',
+    'flask.ext.api.parsers.FormParser',
+    'flask.ext.api.parsers.MultiPartParser'
+]
+cors = CORS(app,resources={r"/*":{"origins":"*"}})
+# socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins='*')
+
+socketio.run(app,port=5000,host='0.0.0.0')
+
+
+
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
 # the best option based on installed packages.
 async_mode = None
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
+# app = Flask(__name__)
+# CORS(app)
+# app.config['SECRET_KEY'] = 'secret!'
+# socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
 thread = None
 thread_lock = Lock()
 
@@ -60,11 +89,16 @@ def my_broadcast_event(message):
 
 @socketio.event
 def join(message):
+    print('JOINED ROOM')
     join_room(message['room'])
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my_response',
          {'data': 'In rooms: ' + ', '.join(rooms()),
           'count': session['receive_count']})
+    emit('update_msg',
+         {'msg': 'In rooms: ' + ', '.join(rooms()),
+          'count': session['receive_count']})
+    
 
 
 @socketio.event
@@ -91,6 +125,11 @@ def changeTurn():
         currentTurn = 'O'
     else:
         currentTurn = 'X'
+
+@socketio.on('join_room')
+def on_join_room(message):
+    print('joining room')
+    join_room(message['room'])
 
 @socketio.on('move')
 def move(message):
