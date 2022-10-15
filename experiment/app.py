@@ -4,6 +4,9 @@ from flask import Flask, render_template, session, request, \
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 import flask_cors
+# from model import Model
+from controller import Controller
+from constants.spacestates import SpaceStates
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -15,7 +18,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
 thread = None
 thread_lock = Lock()
-
+game = Controller()
 
 def background_thread():
     """Example of how to send server generated events to clients."""
@@ -26,15 +29,14 @@ def background_thread():
         socketio.emit('my_response',
                       {'data': 'Server generated event', 'count': count})
 
-
 @app.route('/')
 def index():
     return render_template('index.html', async_mode=socketio.async_mode)
 
 # todo -- move board to separate class
-board = [[0,0,0],[0,0,0],[0,0,0]]
-playerX = None
-playerO = None
+# board = [[0,0,0],[0,0,0],[0,0,0]]
+# playerX = None
+# playerO = None
 
 # @app.route('/place')
 
@@ -57,15 +59,14 @@ def my_broadcast_event(message):
          {'data': message['data'], 'count': session['receive_count']},
          broadcast=True)
 
-
 @socketio.event
 def join(message):
+    print("******JOINING ROOM******")
     join_room(message['room'])
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my_response',
          {'data': 'In rooms: ' + ', '.join(rooms()),
           'count': session['receive_count']})
-
 
 @socketio.event
 def leave(message):
@@ -84,26 +85,20 @@ def on_close_room(message):
          to=message['room'])
     close_room(message['room'])
 
-currentTurn = 'X'
-def changeTurn():
-    global currentTurn
-    if currentTurn == 'X':
-        currentTurn = 'O'
-    else:
-        currentTurn = 'X'
-
 @socketio.on('move')
 def move(message):
-    # print("*****MOVE*****")
-    # board = [[0,0,0],[0,0,0],[0,0,0]]
     spacenum = message['move']
-    row = spacenum // 3
-    col = spacenum % 3
-    board[row][col] = 1
+    current_turn = game.get_current_turn()
+    game.make_move(
+        player=current_turn,
+        spacenum=spacenum
+    )
+    board = game.get_board_state()
+
     emit('board_update', {'board': board}, broadcast=True)
-    changeTurn()
-    emit('change_turn', {'turn': currentTurn}, broadcast=True)
-    # print(message)
+    game.change_turn()
+    current_turn = game.get_current_turn()
+    emit('change_turn', {'turn': current_turn}, broadcast=True)
 
 @socketio.event
 def my_room_event(message):
@@ -150,12 +145,14 @@ def set_username(message):
     print('****set_name')
     print(message)
     name = message['name']
-    if (playerX == None):
-        playerX = name
-        emit('set_player', {'side': 'X'})
-    elif (playerO == None):
-        playerO = name
-        emit('set_player', {'side': 'O'})
+    if (game.get_player_name(SpaceStates.X) is None):
+        game.set_player_name(SpaceStates.X, name)
+        # emit('set_name', {'name': name, 'player': 'X'})
+        emit('set_player', {'side': 'X', 'name': name}, broadcast=True)
+    elif (game.get_player_name(SpaceStates.O) is None):
+        # playerO = name
+        game.set_player_name(SpaceStates.O, name)
+        emit('set_player', {'side': 'O', 'name': name}, broadcast=True)
     emit('update_msg', {'msg': 'Welcome, '+name})
 
 @socketio.on('disconnect')

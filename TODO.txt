@@ -1,3 +1,11 @@
+
+
+TODO Next: SpaceStates is "not serializable," causing sendmove message to throw an error. Fix this -- use 'X' or 'O' in messages
+TODO: Display client ID from server
+TODO: Include client ID in messages?
+
+TODO: Associate some sort of window ID so that O can be separated from x
+
 TODO: Display: X = [player1] / O = [player2]
 TODO: Message to signal game start
 
