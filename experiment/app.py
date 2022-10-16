@@ -7,6 +7,9 @@ import flask_cors
 # from model import Model
 from controller import Controller
 from constants.spacestates import SpaceStates
+from engineio.payload import Payload
+
+Payload.max_decode_packets = 50
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -59,59 +62,65 @@ def my_broadcast_event(message):
          {'data': message['data'], 'count': session['receive_count']},
          broadcast=True)
 
-@socketio.event
-def join(message):
-    print("******JOINING ROOM******")
-    join_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': 'In rooms: ' + ', '.join(rooms()),
-          'count': session['receive_count']})
+# TEMP -- DISABLE (1)
+# @socketio.event
+# def join(message):
+#     print("******JOINING ROOM******")
+#     join_room(message['room'])
+#     session['receive_count'] = session.get('receive_count', 0) + 1
+#     emit('my_response',
+#          {'data': 'In rooms: ' + ', '.join(rooms()),
+#           'count': session['receive_count']})
 
-@socketio.event
-def leave(message):
-    leave_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': 'In rooms: ' + ', '.join(rooms()),
-          'count': session['receive_count']})
+# TEMP -- DISABLE
+# @socketio.event
+# def leave(message):
+#     leave_room(message['room'])
+#     session['receive_count'] = session.get('receive_count', 0) + 1
+#     emit('my_response',
+#          {'data': 'In rooms: ' + ', '.join(rooms()),
+#           'count': session['receive_count']})
 
+# TEMP -- DISABLE
+# @socketio.on('close_room')
+# def on_close_room(message):
+#     session['receive_count'] = session.get('receive_count', 0) + 1
+#     emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
+#                          'count': session['receive_count']},
+#          to=message['room'])
+#     close_room(message['room'])
 
-@socketio.on('close_room')
-def on_close_room(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
-                         'count': session['receive_count']},
-         to=message['room'])
-    close_room(message['room'])
+# TEMP -- DISABLE
+# @socketio.on('move')
+# def move(message):
+#     spacenum = message['move']
+#     current_turn = game.get_current_turn()
+#     game.make_move(
+#         player=current_turn,
+#         spacenum=spacenum
+#     )
+#     board = game.get_board_state()
 
-@socketio.on('move')
-def move(message):
-    spacenum = message['move']
-    current_turn = game.get_current_turn()
-    game.make_move(
-        player=current_turn,
-        spacenum=spacenum
-    )
-    board = game.get_board_state()
+#     emit('board_update', {'board': board}, broadcast=True)
+#     game.change_turn()
+#     current_turn = game.get_current_turn()
+#     emit('change_turn', {'turn': current_turn}, broadcast=True)
 
-    emit('board_update', {'board': board}, broadcast=True)
-    game.change_turn()
-    current_turn = game.get_current_turn()
-    emit('change_turn', {'turn': current_turn}, broadcast=True)
-
-@socketio.event
-def my_room_event(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
-         {'data': message['data'], 'count': session['receive_count']},
-         to=message['room'])
+# TEMP -- DISABLE
+# @socketio.event
+# def my_room_event(message):
+#     session['receive_count'] = session.get('receive_count', 0) + 1
+#     emit('my_response',
+#          {'data': message['data'], 'count': session['receive_count']},
+#          to=message['room'])
 
 
 @socketio.event
 def disconnect_request():
+    print('disconnect_request')
     @copy_current_request_context
     def can_disconnect():
+        print('can_disconnect')
         disconnect()
 
     session['receive_count'] = session.get('receive_count', 0) + 1
@@ -122,10 +131,10 @@ def disconnect_request():
          {'data': 'Disconnected!', 'count': session['receive_count']},
          callback=can_disconnect)
 
-
-@socketio.event
-def my_ping():
-    emit('my_pong')
+# REDUNDANT?
+# @socketio.event
+# def my_ping():
+#     emit('my_pong')
 
 
 @socketio.event
@@ -140,20 +149,21 @@ def connect():
 def test_ping():
     emit('pong', {'data': 'test'})
 
-@socketio.on('set_name')
-def set_username(message):
-    print('****set_name')
-    print(message)
-    name = message['name']
-    if (game.get_player_name(SpaceStates.X) is None):
-        game.set_player_name(SpaceStates.X, name)
-        # emit('set_name', {'name': name, 'player': 'X'})
-        emit('set_player', {'side': 'X', 'name': name}, broadcast=True)
-    elif (game.get_player_name(SpaceStates.O) is None):
-        # playerO = name
-        game.set_player_name(SpaceStates.O, name)
-        emit('set_player', {'side': 'O', 'name': name}, broadcast=True)
-    emit('update_msg', {'msg': 'Welcome, '+name})
+# TEMP -- REMOVE
+# @socketio.on('set_name')
+# def set_username(message):
+#     print('****set_name')
+#     print(message)
+#     name = message['name']
+#     if (game.get_player_name(SpaceStates.X) is None):
+#         game.set_player_name(SpaceStates.X, name)
+#         # emit('set_name', {'name': name, 'player': 'X'})
+#         emit('set_player', {'side': 'X', 'name': name}, broadcast=True)
+#     elif (game.get_player_name(SpaceStates.O) is None):
+#         # playerO = name
+#         game.set_player_name(SpaceStates.O, name)
+#         emit('set_player', {'side': 'O', 'name': name}, broadcast=True)
+#     emit('update_msg', {'msg': 'Welcome, '+name})
 
 @socketio.on('disconnect')
 def test_disconnect():

@@ -109,6 +109,44 @@ def my_new_argument(my_arg=None):
     emit('my_pong')
     
 
+# CLIENT MESSAGES:
+#  - † PLAYER_USERNAME: Client sends name
+#  - † PLAYER_MOVE: Player sends move
+#  - † PLAYER_EXIT_GAME: Client exits game
+#  - † PLAYER_RESTART: Client restarts game
+#  - † PLAYER_EXIT_ROOM: Client exits room
+#  - † PLAYER_ROOM_CHAT_MESSAGE: Client joins room
+
+@socketio.event
+def player_username(my_arg=None):
+    if(my_arg is not None) and (my_arg != '') : print(my_arg)
+    emit('ack_player_username', my_arg)
+
+@socketio.event
+def player_move(my_arg=None):
+    if(my_arg is not None) and (my_arg != '') : print(my_arg)
+    emit('ack_player_move', my_arg)
+
+@socketio.event
+def player_exit_game(my_arg=None):
+    if(my_arg is not None) and (my_arg != '') : print(my_arg)
+    emit('ack_player_exit_game', my_arg)
+
+@socketio.event
+def player_exit_room(my_arg=None):
+    if(my_arg is not None) and (my_arg != '') : print(my_arg)
+    emit('ack_player_exit_room', my_arg)
+
+@socketio.event
+def player_restart(my_arg=None):
+    if(my_arg is not None) and (my_arg != '') : print(my_arg)
+    emit('ack_player_restart', my_arg)
+
+@socketio.event
+def player_room_chat(my_arg=None):
+    if(my_arg is not None) and (my_arg != '') : print(my_arg)
+    emit('ack_player_room_chat', my_arg)
+
 @socketio.event
 def connect(my_arg=None):
     if(my_arg is not None) and (my_arg != '') : print(my_arg)
