@@ -1,8 +1,13 @@
 
+LAST: Registered player names, ids with sides
 
-TODO Next: SpaceStates is "not serializable," causing sendmove message to throw an error. Fix this -- use 'X' or 'O' in messages
-TODO: Display client ID from server
-TODO: Include client ID in messages?
+TODO: Test X Player making a Move
+TODO: Test O Player trying to make a move when it is X's TURN
+TODO: Test O Player moving after X
+
+
+DONE: Display client ID from server
+DONE: Include client ID in messages?
 
 TODO: Associate some sort of window ID so that O can be separated from x
 
@@ -10,9 +15,22 @@ TODO: Display: X = [player1] / O = [player2]
 TODO: Message to signal game start
 
 TODO: Prettier messages
+TODO: Register room name (static?)
+TODO: Send Client room name when they join a room
 TODO: Messages have roomname
+
+
+DONE: Function to test if board is full ("CATS" Game)
+DONE: Test diagonal matches
+DONE: Test horizontal matches
+DONE: Test vertical matches
+
 
 DONE: Message to assign side x/o
 DONE: Message to tx / rx moves
 DONE: Message to send board
 DONE: Message to change turn
+DONE: Send Client request.sid upon connction
+DONE: SpaceStates is "not serializable," causing sendmove message to throw an error. Fix this -- use 'X' or 'O' in messages
+
+
