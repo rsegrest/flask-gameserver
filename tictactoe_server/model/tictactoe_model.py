@@ -26,6 +26,9 @@ class TicTacToeModel():
     def name(self):
         return ("%s %s" % (self.x_player_name,self.o_player_name))
 
+    def set_current_turn(self, side):
+        self.current_turn = side
+
     # def register_a_player(self, name, id):
     #     if self.player_x == None:
     #         self.player_x = TicTacToePlayerModel(name, id, X)
@@ -75,6 +78,15 @@ class TicTacToeModel():
                 if space == EMPTY:
                     return False
         return True
+
+    def is_space_empty(self, spacenum):
+        print("spacenum: %s" % spacenum)
+        row = spacenum // 3
+        col = spacenum % 3
+        print("row: %s" % row)
+        print("col: %s" % col)
+        print("board: %s" % self.board)
+        return self.board[row][col] == EMPTY
 
     def set_board(self, board):
         self.board = board
@@ -132,10 +144,10 @@ class TicTacToeModel():
     def set_player_o(self, player):
         self.player_o = player
 
-    def set_spacenum(self, player, spacenum):
-        row = spacenum // 3
-        col = spacenum % 3
-        self.board[row][col] = player
+    def set_spacenum(self, side, spacenum):
+        row = int(spacenum) // 3
+        col = int(spacenum) % 3
+        self.board[row][col] = side
         
     def get_player_names(self):
         return [self.player_x.name, self.player_o.name]

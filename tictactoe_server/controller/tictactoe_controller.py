@@ -9,11 +9,20 @@ class TicTacToeController(): # Model):
         self.model = TicTacToeModel()
         pass
     
+    def set_model(self, model):
+        self.model = model
+    
     def is_board_full(self):
         self.model.is_board_full()
+    
+    def is_space_empty(self, spacenum):
+        return self.model.is_space_empty(spacenum)
 
     def get_board_state(self):
         return self.model.get_board()
+    
+    def set_board_state(self, board):
+        self.model.set_board(board)
     
     def has_game_started(self):
         return self.model.has_game_started
@@ -35,8 +44,44 @@ class TicTacToeController(): # Model):
             count += 1
         return count
 
-    def make_move(self, player, spacenum):
-        self.model.set_spacenum(player, spacenum)
+    def is_turn_current(self, side):
+        if side == self.model.current_turn:
+            return True
+        return False
+    
+    def does_player_id_match(self, side, player_id):
+        if side == X:
+            return self.model.player_x.id == player_id
+        if side == O:
+            return self.model.player_o.id == player_id
+        return False
+    
+    def make_move(self, side, spacenum):
+        self.model.set_spacenum(side, spacenum)
+        is_winner = self.model.check_for_win()
+        is_draw = self.model.check_for_draw()
+        if (is_winner == False) and (is_draw == False):
+            self.change_turn()
+        # if is_winner:
+        #     Broadcast winner
+        #     self.model.game_status = side + "_WON"
+        # elif is_draw:
+        #    Broadcast draw
+        #    self.model.game_status = DRAW
+    
+    def try_move(self, side, player_id, spacenum):
+        print("make_move: side: %s, player_id: %s, spacenum: %s" % (str(side), str(player_id), str(spacenum)))
+        if self.is_space_empty(spacenum):
+            if self.is_turn_current(side):
+                if self.does_player_id_match(side, player_id):
+                    self.make_move(side, spacenum)
+                    return True
+        return False
+        # self.model.set_spacenum(side, spacenum)
+        # Check if game is over
+        # Check if game is a draw
+        # Change turn
+
 
     def start_game(self):
         self.model.game_started = True
@@ -63,6 +108,9 @@ class TicTacToeController(): # Model):
 
     def get_current_turn(self):
         return self.model.get_current_turn()
+
+    def set_current_turn(self, side):
+        self.model.current_turn = side
 
     def change_turn(self):
         if self.model.current_turn == X:

@@ -4,7 +4,7 @@ from constants.spacestates import EMPTY, X, O
 def func(x):
     return x + 1
 
-class TestMVC:
+class TestModel:
     # def test_board(self):
     #     assert True
     def test_answer(self):

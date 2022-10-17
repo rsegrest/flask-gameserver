@@ -112,7 +112,7 @@ def disconnect_request(my_arg=None):
 # TESTED WITH POSTMAN, returns 'my_pong'
 @socketio.event
 def my_ping(my_arg=None):
-    print('my_ping')
+    # print('my_ping')
     if(my_arg is not None) and (my_arg != '') : print(my_arg)
     emit('my_pong')
 
@@ -151,10 +151,17 @@ def player_username(message):
         'side': tictactoeGame.get_sides(), # [request.sid]
     })
 @socketio.event
-def player_move(my_arg=None):
+def player_move(message):
     print('player_move')
-    if(my_arg is not None) and (my_arg != '') : print(my_arg)
-    emit('ack_player_move', my_arg)
+    # if(my_arg is not None) and (my_arg != '') : print(my_arg)
+    side = message['side']
+    print('id:')
+    print(request.sid)
+    player_id = request.sid
+    spacenum = message['spacenum']
+    tictactoeGame.try_move(side, player_id, spacenum)
+    emit('ack_player_move', message)
+    emit('update_board', tictactoeGame.model.board, broadcast=True)
 
 @socketio.event
 def player_exit_game(my_arg=None):

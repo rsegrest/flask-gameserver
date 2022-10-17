@@ -1,0 +1,9 @@
+
+TODO: Associate some sort of window ID so that O can be separated from x
+
+TODO: Display: X = [player1] / O = [player2]
+
+TODO: Prettier messages
+TODO: Register room name (static?)
+TODO: Send Client room name when they join a room
+TODO: Messages have roomname
