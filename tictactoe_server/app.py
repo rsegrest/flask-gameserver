@@ -160,8 +160,9 @@ def player_move(message):
     player_id = request.sid
     spacenum = message['spacenum']
     tictactoeGame.try_move(side, player_id, spacenum)
-    emit('ack_player_move', message)
+    # emit('ack_player_move', message)
     emit('update_board', tictactoeGame.model.board, broadcast=True)
+    emit('update_game_status', tictactoeGame.model.game_status, broadcast=True)
 
 @socketio.event
 def player_exit_game(my_arg=None):

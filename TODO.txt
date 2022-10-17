@@ -1,9 +1,9 @@
 
 LAST: Registered player names, ids with sides
 
+?: Write message tests
+DONE: Send move message
 TODO: Write tests for "try_move" in controller
-TODO: Write tests for "is_space_empty" in controller
-TODO: Write tests for "is_turn_current" in controller
 TODO: Write tests for "make_move" in controller
     - Should test endgame conditions (win, draw)
     - Should change board appropriately
@@ -11,6 +11,8 @@ TODO: Write tests for "make_move" in controller
 TODO: Message to signal game start
 
 
+DONE: Write tests for "is_space_empty" in controller
+DONE: Write tests for "is_turn_current" in controller
 
 DONE: Function to test X Player making a Move
 DONE: Function to test O Player trying to make a move when it is X's TURN

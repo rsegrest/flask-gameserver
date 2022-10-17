@@ -81,10 +81,10 @@ class TicTacToeModel():
 
     def is_space_empty(self, spacenum):
         print("spacenum: %s" % spacenum)
-        row = spacenum // 3
-        col = spacenum % 3
-        print("row: %s" % row)
-        print("col: %s" % col)
+        row = int(spacenum) // 3
+        col = int(spacenum) % 3
+        print("row: %s" % str(row))
+        print("col: %s" % str(col))
         print("board: %s" % self.board)
         return self.board[row][col] == EMPTY
 

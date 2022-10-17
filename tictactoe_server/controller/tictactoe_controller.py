@@ -55,19 +55,23 @@ class TicTacToeController(): # Model):
         if side == O:
             return self.model.player_o.id == player_id
         return False
-    
+
+    def check_for_win(self):
+        return self.model.has_winner()
+
+    def check_for_draw(self):
+        return self.model.is_board_full()
+
     def make_move(self, side, spacenum):
         self.model.set_spacenum(side, spacenum)
-        is_winner = self.model.check_for_win()
-        is_draw = self.model.check_for_draw()
+        is_winner = self.check_for_win()
+        is_draw = self.check_for_draw()
         if (is_winner == False) and (is_draw == False):
             self.change_turn()
-        # if is_winner:
-        #     Broadcast winner
-        #     self.model.game_status = side + "_WON"
-        # elif is_draw:
-        #    Broadcast draw
-        #    self.model.game_status = DRAW
+        if is_winner:
+            self.model.game_status = side + "_WON"
+        elif is_draw:
+           self.model.game_status = DRAW
     
     def try_move(self, side, player_id, spacenum):
         print("make_move: side: %s, player_id: %s, spacenum: %s" % (str(side), str(player_id), str(spacenum)))
