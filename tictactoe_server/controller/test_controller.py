@@ -3,6 +3,7 @@ from controller.tictactoe_controller import TicTacToeController
 from model.tic_player_model import TicTacToePlayerModel
 from model.tictactoe_model import TicTacToeModel
 from constants.spacestates import EMPTY, X, O
+from constants.gamestates import NOT_STARTED, X_TURN, O_TURN, X_WON, O_WON, DRAW
 
 def func(x):
     return x + 1
@@ -60,3 +61,86 @@ class TestController:
         assert check_id_match_1 == True
         assert check_id_match_2 == False
         assert check_id_match_3 == False
+    
+    def test_try_move(self):
+        game = TicTacToeController()
+        model = TicTacToeModel()
+        playerx = TicTacToePlayerModel("playerx", 1, X)
+        playero = TicTacToePlayerModel("playero", 2, O)
+
+        model.set_player_x(playerx)
+        model.set_player_o(playero)
+        game.set_model(model)
+        
+        game.try_move(X,1,0)
+        assert game.get_board_state()[0][0] == X
+        assert game.get_board_state()[0][1] == EMPTY
+        assert game.get_current_turn() == O
+
+    def test_cats(self):
+        game = TicTacToeController()
+        model = TicTacToeModel()
+        playerx = TicTacToePlayerModel("playerx", 1, X)
+        playero = TicTacToePlayerModel("playero", 2, O)
+        model.board = [
+            [EMPTY,O,X],
+            [X,X,O],
+            [O,X,O]
+        ]
+
+        model.game_started = True
+        model.game_status = X_TURN
+        model.current_turn = X
+
+        model.set_player_x(playerx)
+        model.set_player_o(playero)
+        game.set_model(model)
+        
+        game.try_move(X,1,0)
+        assert game.get_board_state()[0][0] == X
+        assert game.model.game_status == DRAW
+    
+    def test_x_win(self):
+        game = TicTacToeController()
+        model = TicTacToeModel()
+        playerx = TicTacToePlayerModel("playerx", 1, X)
+        playero = TicTacToePlayerModel("playero", 2, O)
+        model.board = [
+            [EMPTY,O,X],
+            [X,X,O],
+            [X,O,O]
+        ]
+
+        model.game_started = True
+        model.game_status = X_TURN
+        model.current_turn = X
+
+        model.set_player_x(playerx)
+        model.set_player_o(playero)
+        game.set_model(model)
+        
+        game.try_move(X,1,0)
+        assert game.get_board_state()[0][0] == X
+        assert game.model.game_status == X_WON
+    
+    def test_o_win(self):
+        game = TicTacToeController()
+        model = TicTacToeModel()
+        playerx = TicTacToePlayerModel("playerx", 1, X)
+        playero = TicTacToePlayerModel("playero", 2, O)
+        model.board = [
+            [EMPTY,X,EMPTY],
+            [X,X,O],
+            [EMPTY,EMPTY,O]
+        ]
+
+        model.game_started = True
+        model.game_status = O_TURN
+        model.current_turn = O
+
+        model.set_player_x(playerx)
+        model.set_player_o(playero)
+        game.set_model(model)
+        
+        game.try_move(O,2,2)
+        assert game.model.game_status == O_WON

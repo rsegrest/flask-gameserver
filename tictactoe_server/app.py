@@ -139,20 +139,25 @@ def player_username(message):
     print('message', message)
     # if(my_arg is not None) and (my_arg != ''): print(my_arg)
     if (tictactoeGame.num_players_registered() < 2):
-        tictactoeGame.register_a_player(message['name'], request.sid)
+        print('assigning player')
+        side_assigned = tictactoeGame.register_a_player(message['name'], request.sid)
         # TicTacToeModel.num_players_registered += 1
         # TicTacToeModel.player_username = my_arg
         # TicTacToeModel.player_id = request.sid
         # print('player_username: ' + my_arg)
         # emit('my_pong', {'id': request.sid})
-    emit('ack_player_username', {
-        'id': request.sid,
-        'username': tictactoeGame.get_player_names(), # [request.sid]})
-        'side': tictactoeGame.get_sides(), # [request.sid]
-    })
+        emit('ack_player_username', {
+            'id': request.sid,
+            'username': tictactoeGame.get_player_names(), # [request.sid]})
+            'side': side_assigned, # [request.sid]
+        })
+        print('returning True')
+        return True
+    return False
 @socketio.event
 def player_move(message):
     print('player_move')
+    print('message', message)
     # if(my_arg is not None) and (my_arg != '') : print(my_arg)
     side = message['side']
     print('id:')
@@ -161,8 +166,8 @@ def player_move(message):
     spacenum = message['spacenum']
     tictactoeGame.try_move(side, player_id, spacenum)
     # emit('ack_player_move', message)
-    emit('update_board', tictactoeGame.model.board, broadcast=True)
-    emit('update_game_status', tictactoeGame.model.game_status, broadcast=True)
+    emit('update_board', { 'board': tictactoeGame.model.board }, broadcast=True)
+    emit('update_game_status', {'status': tictactoeGame.model.game_status }, broadcast=True)
 
 @socketio.event
 def player_exit_game(my_arg=None):

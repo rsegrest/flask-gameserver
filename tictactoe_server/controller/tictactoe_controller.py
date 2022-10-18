@@ -30,11 +30,11 @@ class TicTacToeController(): # Model):
     def register_a_player(self, name, id):
         if self.model.player_x == None:
             self.model.player_x = TicTacToePlayerModel(name, id, X)
-            return True
+            return X
         if self.model.player_o == None:
             self.model.player_o = TicTacToePlayerModel(name, id, O)
-            return True
-        return False
+            return O
+        return None
 
     def num_players_registered(self):
         count = 0
@@ -69,9 +69,11 @@ class TicTacToeController(): # Model):
         if (is_winner == False) and (is_draw == False):
             self.change_turn()
         if is_winner:
+            print('is_winner')
             self.model.game_status = side + "_WON"
         elif is_draw:
-           self.model.game_status = DRAW
+            print('is_draw')
+            self.model.game_status = DRAW
     
     def try_move(self, side, player_id, spacenum):
         print("make_move: side: %s, player_id: %s, spacenum: %s" % (str(side), str(player_id), str(spacenum)))
