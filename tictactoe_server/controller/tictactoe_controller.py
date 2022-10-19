@@ -63,6 +63,7 @@ class TicTacToeController(): # Model):
         return self.model.is_board_full()
 
     def make_move(self, side, spacenum):
+        print('make_move: side: %s, spacenum: %s' % (str(side), str(spacenum)))
         self.model.set_spacenum(side, spacenum)
         is_winner = self.check_for_win()
         is_draw = self.check_for_draw()

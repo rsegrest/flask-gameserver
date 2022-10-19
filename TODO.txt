@@ -1,6 +1,11 @@
 
+TODO: Get rid of "start game" message
+TODO: Get rid of redundancy in turn, gamestate with turn, etc.
+
 TODO: Separate into rooms
 TODO: Lobby function
+
+DONE: Create "tictactoe" namespace
 
 DONE: Send move message
 DONE: Write tests for "try_move" in controller
