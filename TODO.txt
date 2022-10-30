@@ -1,3 +1,6 @@
+TODO: Restart game
+TODO: Indication when it is your turn / not your turn 
+   - Change color or dim board?
 TODO: Separate into rooms
 TODO: Lobby function
 

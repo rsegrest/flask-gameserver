@@ -98,10 +98,14 @@ class TicTacToeController(): # Model):
         # Check if game is a draw
         # Change turn
 
+    def clear_board(self):
+        self.model.board = [[EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY]]
+        return
 
     def start_game(self):
         self.model.game_started = True
         self.model.game_status = X_TURN
+        self.clear_board()
         return
 
     def set_player_name(self, player, name):

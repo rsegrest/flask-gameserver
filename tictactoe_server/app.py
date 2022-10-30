@@ -212,6 +212,8 @@ def start_game_func():
         if tictactoeGame.has_game_started():
             torf = True
     print('torf', torf)
+    emit('update_board', { 'board': tictactoeGame.model.board }, broadcast=True)
+    emit('update_game_status', {'status': tictactoeGame.model.game_status }, broadcast=True)
     emit('ack_start_game', {'starting_game': str(torf)})
 
 # NO LONGER NEEDED
