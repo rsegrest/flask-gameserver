@@ -1,8 +1,7 @@
-TODO: "Current turn" on client display is null
-
 TODO: Separate into rooms
 TODO: Lobby function
 
+DONE: "Current turn" on client display is null
 DONE: Current player's move is rejected (by server?)
 DONE: Status message not updating
 DONE: Get rid of "IN_PROGRESS" game status in client and server
