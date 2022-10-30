@@ -45,7 +45,8 @@ class TicTacToeController(): # Model):
         return count
 
     def is_turn_current(self, side):
-        if side == self.model.current_turn:
+        print('ttt_cont--is_turn_current: '+str(side))
+        if side+'_TURN' == self.model.game_status:
             return True
         return False
     
@@ -78,11 +79,19 @@ class TicTacToeController(): # Model):
     
     def try_move(self, side, player_id, spacenum):
         print("make_move: side: %s, player_id: %s, spacenum: %s" % (str(side), str(player_id), str(spacenum)))
+        
         if self.is_space_empty(spacenum):
+            print('space is empty')
             if self.is_turn_current(side):
+                print('turn is current')
                 if self.does_player_id_match(side, player_id):
+                    print('player id matches')
                     self.make_move(side, spacenum)
                     return True
+                else:
+                    print('player id does not match')
+            else:
+                print('turn is not current')
         return False
         # self.model.set_spacenum(side, spacenum)
         # Check if game is over
@@ -114,16 +123,20 @@ class TicTacToeController(): # Model):
         return (str(self.model.get_player_x()), str(self.model.get_player_o()))
 
     def get_current_turn(self):
-        return self.model.get_current_turn()
+        if (self.model.game_status == X_TURN):
+            return X
+        elif (self.model.game_status == O_TURN):
+            return O
+        return None
 
     def set_current_turn(self, side):
-        self.model.current_turn = side
+        self.model.game_status = side+"_TURN"
 
     def change_turn(self):
-        if self.model.current_turn == X:
-            self.model.current_turn = O
+        if self.model.game_status == X_TURN:
+            self.model.game_status = O_TURN
         else:
-            self.model.current_turn = X
+            self.model.game_status = X_TURN
 
     def start():
         pass

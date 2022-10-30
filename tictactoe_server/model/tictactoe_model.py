@@ -21,13 +21,13 @@ class TicTacToeModel():
         ]
 
         self.game_status = NOT_STARTED
-        self.current_turn = X
+        # self.current_turn = X
 
     def name(self):
         return ("%s %s" % (self.x_player_name,self.o_player_name))
 
     def set_current_turn(self, side):
-        self.current_turn = side
+        self.game_status = side+"_TURN"
 
     # def register_a_player(self, name, id):
     #     if self.player_x == None:
@@ -101,7 +101,12 @@ class TicTacToeModel():
         return self.game_status != NOT_STARTED
 
     def get_current_turn(self):
-        return self.current_turn
+        # return self.game_status
+        if self.game_status == X_TURN:
+            return X
+        elif self.game_status == O_TURN:
+            return O
+        return None
 
     def get_board(self):
         return self.board

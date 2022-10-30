@@ -1,9 +1,15 @@
-
-TODO: Get rid of "start game" message
-TODO: Get rid of redundancy in turn, gamestate with turn, etc.
+TODO: "Current turn" on client display is null
 
 TODO: Separate into rooms
 TODO: Lobby function
+
+DONE: Current player's move is rejected (by server?)
+DONE: Status message not updating
+DONE: Get rid of "IN_PROGRESS" game status in client and server
+
+DONE: Get rid of "start game" message
+DONE: Fix -- game turn not changing to "O_TURN"?
+DONE: Get rid of redundancy in turn, gamestate with turn, etc.
 
 DONE: Create "tictactoe" namespace
 
