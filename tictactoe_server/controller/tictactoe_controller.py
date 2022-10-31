@@ -117,7 +117,7 @@ class TicTacToeController(): # Model):
     def get_player_name(self, player):
         if player == X:
             return self.model.get_player_x()
-        elif player == X:
+        elif player == O:
             return self.model.get_player_o()
 
     def get_sides(self):

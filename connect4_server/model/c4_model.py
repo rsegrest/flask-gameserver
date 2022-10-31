@@ -36,20 +36,22 @@ class C4Model():
     def has_diagonal_match(self):
         # pass
         # CHECK FORWARD DIAGONALS
-        for row in range(NUM_ROWS-4):
-            for col in range(NUM_COLS-4):
-                if (self.board[row][col] == self.board[row+1][col+1] == self.board[row+2][col+2] == self.board[row+3][col+3] == self.board[row+4][col+4] and self.board[row][col] != EMPTY):
+        for row in range(NUM_ROWS-3):
+            for col in range(NUM_COLS-3):
+                if (self.board[row][col] == self.board[row+1][col+1] == self.board[row+2][col+2] == self.board[row+3][col+3] and self.board[row][col] != EMPTY):
+                    print("row, col: %s, %s" % (row, col))
                     return True
         for row in range(NUM_ROWS-4):
-            for col in range(4,NUM_COLS):
-                if (self.board[row][col] == self.board[row+1][col-1] == self.board[row+2][col-2] == self.board[row+3][col-3] == self.board[row-4][col+4] and self.board[row][col] != EMPTY):
+            for col in range(4,(NUM_COLS-1)):
+                print("row, col: %s, %s" % (row, col))
+                if (self.board[row][col] == self.board[row+1][col-1] == self.board[row+2][col-2] == self.board[row+3][col-3] == self.board[row+4][col-4] and self.board[row][col] != EMPTY):
                     return True
         return False
 
     def has_horizontal_match(self):
         # for loop from 0 to 2:
         for row in range(NUM_ROWS):
-            for col in range(NUM_COLS-4):
+            for col in range(NUM_COLS-3):
                 if (self.board[row][col] == self.board[row][col+1] == self.board[row][col+2] == self.board[row][col+3] and self.board[row][col] != EMPTY):
                     return True
         return False
@@ -57,8 +59,10 @@ class C4Model():
     def has_vertical_match(self):
         # loop through row indexes:
         for col in range(NUM_COLS):
-            for row in range(NUM_ROWS-4):
-                if (self.board[row][col] == self.board[row+1][col] == self.board[row+2][col] and self.board[row+3][col] and self.board[row][col] != EMPTY):
+            for row in range(NUM_ROWS-3):
+                print("row, col: %s, %s" % (row, col))
+                if (self.board[row][col] == self.board[row+1][col] == self.board[row+2][col] == self.board[row+3][col] and self.board[row][col] != EMPTY):
+                    print('vertical match found at row %s, col %s' % (row, col))
                     return True
         return False
 

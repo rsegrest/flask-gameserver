@@ -46,6 +46,9 @@ class TicTacToeModel():
     #         count += 1
     #     return count
     
+    # CharlotteMaeSegrest@gmail.com
+    # Ozzie10282011
+
     def has_diagonal_match(self):
         if (self.board[0][0] == self.board[1][1] == self.board[2][2] and self.board[0][0] != EMPTY):
             return True
@@ -124,7 +127,7 @@ class TicTacToeModel():
         print(self.board[2])
 
     def get_player_x(self):
-        if (self.player_o is None):
+        if (self.player_x is None):
             return None
         return self.player_x.name
 

@@ -138,10 +138,10 @@ def player_username(message):
     print('player_username')
     print('message', message)
     # if(my_arg is not None) and (my_arg != ''): print(my_arg)
-    if (tictactoeGame.num_players_registered() < 2):
+    if (connect4Game.num_players_registered() < 2):
         print('assigning player')
         thisUsername = message['name']
-        side_assigned = tictactoeGame.register_a_player(thisUsername, request.sid)
+        side_assigned = connect4Game.register_a_player(thisUsername, request.sid)
         print('side_assigned', side_assigned)
         # TicTacToeModel.num_players_registered += 1
         # TicTacToeModel.player_username = my_arg
@@ -150,11 +150,11 @@ def player_username(message):
         # emit('my_pong', {'id': request.sid})
         emit('ack_player_username', {
             'id': request.sid,
-            # 'username': tictactoeGame.get_player_names(), # [request.sid]})
+            # 'username': connect4Game.get_player_names(), # [request.sid]})
             'username': thisUsername,
             'side': side_assigned, # [request.sid]
         }, broadcast=True)
-        if (tictactoeGame.num_players_registered() == 2):
+        if (connect4Game.num_players_registered() == 2):
             start_game_func()
         print('returning True')
         return True
@@ -169,10 +169,12 @@ def player_move(message):
     print(request.sid)
     player_id = request.sid
     spacenum = message['spacenum']
-    tictactoeGame.try_move(side, player_id, spacenum)
+    connect4Game.try_move(side, player_id, spacenum)
     # emit('ack_player_move', message)
-    emit('update_board', { 'board': tictactoeGame.model.board }, broadcast=True)
-    emit('update_game_status', {'status': tictactoeGame.model.game_status }, broadcast=True)
+    emit('update_board', { 'board': connect4Game.model.board }, broadcast=True)
+    emit('update_game_status', {
+        'status': connect4Game.model.game_status
+    }, broadcast=True)
 
 @socketio.event
 def player_exit_game(my_arg=None):
@@ -205,15 +207,15 @@ def get_board_state(my_arg=None):
     emit('ack_get_board_state', my_arg)
 
 def start_game_func():
-    print('start_game: '+str(tictactoeGame.get_player_names()))
+    print('start_game: '+str(connect4Game.get_player_names()))
     torf = False
-    if tictactoeGame.num_players_registered() == 2:
-        tictactoeGame.start_game()
-        if tictactoeGame.has_game_started():
+    if connect4Game.num_players_registered() == 2:
+        connect4Game.start_game()
+        if connect4Game.has_game_started():
             torf = True
     print('torf', torf)
-    emit('update_board', { 'board': tictactoeGame.model.board }, broadcast=True)
-    emit('update_game_status', {'status': tictactoeGame.model.game_status }, broadcast=True)
+    emit('update_board', { 'board': connect4Game.model.board }, broadcast=True)
+    emit('update_game_status', {'status': connect4Game.model.game_status }, broadcast=True)
     emit('ack_start_game', {'starting_game': str(torf)})
 
 # NO LONGER NEEDED
