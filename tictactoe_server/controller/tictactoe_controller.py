@@ -33,7 +33,7 @@ class TicTacToeController(): # Model):
     def register_player(self):
         if (self.num_players_registered() < 2):
             print('assigning player')
-            # thisUsername = message['name']
+            thisUsername = message['name']
             side_assigned = self.register_a_player(thisUsername, request.sid)
             print('side_assigned', side_assigned)
             emit('ack_player_username', {
@@ -99,7 +99,7 @@ class TicTacToeController(): # Model):
         print('check for draw: isFull: %s' % str(isFull))
         return isFull
 
-    def make_move(self, side, spacenum):
+    def make_move(self, side, spacenum, emit_func=None):
         print('make_move: side: %s, spacenum: %s' % (str(side), str(spacenum)))
         self.model.set_spacenum(side, spacenum)
         is_winner = self.check_for_win()
@@ -112,8 +112,13 @@ class TicTacToeController(): # Model):
         elif is_draw:
             print('is_draw')
             self.model.game_status = DRAW
-    
-    def try_move(self, side, player_id, spacenum):
+        if (emit_func != None):
+            emit_func('update_board', { 'board': self.model.board }, broadcast=True)
+            emit_func('update_game_status', {'status': self.model.game_status }, broadcast=True)
+        else:
+            print('emit is None-- could not send updates to client')
+
+    def try_move(self, side, player_id, spacenum, emit_func=None):
         print("make_move: side: %s, player_id: %s, spacenum: %s" % (str(side), str(player_id), str(spacenum)))
         
         if self.is_space_empty(spacenum):
@@ -122,7 +127,7 @@ class TicTacToeController(): # Model):
                 print('turn is current')
                 if self.does_player_id_match(side, player_id):
                     print('player id matches')
-                    self.make_move(side, spacenum)
+                    self.make_move(side, spacenum, emit_func)
                     return True
                 else:
                     print('player id does not match')

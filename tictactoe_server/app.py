@@ -6,6 +6,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, \
 
 from constants.spacestates import EMPTY, X, O
 
+
 # import flask_cors # ?NEEDED?
 from controller.tictactoe_controller import TicTacToeController
 # from model.tictactoe_model import TicTacToeModel
@@ -141,21 +142,16 @@ def player_username(message):
     returnVal = tictactoeGame.register_player(thisUserName)
     return returnVal
 
-
 @socketio.event
 def player_move(message):
     print('player_move')
     print('message', message)
-    # if(my_arg is not None) and (my_arg != '') : print(my_arg)
     side = message['side']
-    print('id:')
-    print(request.sid)
     player_id = request.sid
     spacenum = message['spacenum']
-    tictactoeGame.try_move(side, player_id, spacenum)
-    # emit('ack_player_move', message)
-    emit('update_board', { 'board': tictactoeGame.model.board }, broadcast=True)
-    emit('update_game_status', {'status': tictactoeGame.model.game_status }, broadcast=True)
+    tictactoeGame.try_move(side, player_id, spacenum, emit)
+    # emit('update_board', { 'board': tictactoeGame.model.board }, broadcast=True)
+    # emit('update_game_status', {'status': tictactoeGame.model.game_status }, broadcast=True)
 
 @socketio.event
 def player_exit_game(my_arg=None):

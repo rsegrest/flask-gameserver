@@ -1,15 +1,15 @@
-Process for tictactoe game management
+Process for connect four game management
  - Server online
  - Client 1 Connects
     -> *ROOM: Client joins room or is assigned room name
     <- † MY_USERNAME: Client sends name
-    -> *PLAYER ASSIGN SIDE: Client is assigned 'X'
+    -> *PLAYER ASSIGN SIDE: Client is assigned black
  - Client 2 Connects
     -> *ROOM: Client joins room or is assigned room name
     <- † MY_USERNAME: Client sends name
-    -> *PLAYER ASSIGN SIDE: Client is assigned 'O'
+    -> *PLAYER ASSIGN SIDE: Client is assigned red
  -> Send *GAME STATUS: START message
- -> Send *CHANGE TURN message 'X'
+ -> Send *CHANGE TURN message black
  == Game loop starts ==
     == Move loop starts ==
         <- † MOVE: Player sends move
@@ -28,11 +28,11 @@ Process for tictactoe game management
 
 SERVER MESSAGES:
  - *ROOM: Client joins room or is assigned room name
- - *PLAYER_ASSIGN_SIDE: Client is assigned 'X' or 'O'
+ - *PLAYER_ASSIGN_SIDE: Client is assigned black or red
  - *GAME_STATUS: START
- - *CHANGE_TURN: 'X' or 'O'
+ - *CHANGE_TURN: black or red
  - *BOARD_UPDATE: Board state
- - *GAME_STATUS_UPDATE: (0 = no winner, 1 = X wins, 2 = O wins, 3 = draw)
+ - *GAME_STATUS_UPDATE: B_TURN, R_TURN, B_WON, R_WON, DRAW, NOT_STARTED
  - *ROOM_CHAT_MESSAGE: (room, sender, message)
  - *PRIVATE_CHAT_MESSAGE: (sender, receiver, message)
 

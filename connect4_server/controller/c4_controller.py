@@ -30,13 +30,63 @@ class C4Controller(): # Model):
     def has_game_started(self):
         return self.model.has_game_started
     
-    def register_a_player(self, name, id):
-        if self.model.player_black == None:
-            self.model.player_black = C4PlayerModel(name, id, B)
-            return B
-        if self.model.player_red == None:
-            self.model.player_red = C4PlayerModel(name, id, R)
-            return R
+    # def register_player(self):
+    #     if (self.num_players_registered() < 2):
+    #         print('assigning player')
+    #         # thisUsername = message['name']
+    #         side_assigned = self.register_a_player(thisUsername, request.sid)
+    #         print('side_assigned', side_assigned)
+    #         emit('ack_player_username', {
+    #             'id': request.sid,
+    #             # 'username': tictactoeGame.get_player_names(), # [request.sid]})
+    #             'username': thisUsername,
+    #             'side': side_assigned, # [request.sid]
+    #         }, broadcast=True)
+    #         if (self.num_players_registered() == 2):
+    #             self.start_game_func()
+    #         print('returning True')
+    #         return True
+    #     return False
+
+    # def register_a_player(self, name, id):
+    #     if self.model.player_black == None:
+    #         self.model.player_black = C4PlayerModel(name, id, B)
+    #         return B
+    #     if self.model.player_red == None:
+    #         self.model.player_red = C4PlayerModel(name, id, R)
+    #         return R
+    #     return None
+
+    def register_player(self, name, id, emit_func):
+        side_assigned = None
+        print('register_player: name: %s, id: %s' % (str(name), str(id)))
+        print('player black: %s' % str(self.model.player_black))
+        print('player red: %s' % str(self.model.player_red))
+        num_players = self.num_players_registered()
+        print('num players already registered: %s' % str(num_players))
+        # thisUsername = message['name']
+        # side_assigned = self.register_a_player(thisUsername, request.sid)
+        if num_players < 2:
+            if self.model.player_black == None:
+                print('player black is none')
+                self.model.player_black = C4PlayerModel(name, id, B)
+                side_assigned = B
+                # return B
+            elif self.model.player_red == None:
+                print('player red is none')
+                self.model.player_red = C4PlayerModel(name, id, R)
+                side_assigned = R
+                self.start_game()
+                # return R
+            if side_assigned != None:
+                print('emitting response')
+                emit_func('ack_player_username', {
+                    'id': id,
+                    # 'username': tictactoeGame.get_player_names(), # [request.sid]})
+                    'username': name,
+                    'side': side_assigned, # [request.sid]
+                }, broadcast=True)
+                return side_assigned
         return None
 
     def num_players_registered(self):
@@ -76,7 +126,7 @@ class C4Controller(): # Model):
                 break
         return last_empty_row
 
-    def make_move(self, side, column):
+    def make_move(self, side, column, emit_func=None):
         print('make_move: side: %s, column: %s' % (str(side), str(column)))
         # self.model.set_space(side, space)
         lowest_empty_row = self.get_lowest_empty_row(column)
@@ -94,7 +144,7 @@ class C4Controller(): # Model):
             print('is_draw')
             self.model.game_status = DRAW
     
-    def try_move(self, side, player_id, column):
+    def try_move(self, side, player_id, column, emit_func=None):
         print("make_move: side: %s, player_id: %s, column: %s" % (str(side), str(player_id), str(column)))
         
         if self.does_column_have_space(column):
@@ -103,7 +153,7 @@ class C4Controller(): # Model):
                 print('turn is current')
                 if self.does_player_id_match(side, player_id):
                     print('player id matches')
-                    self.make_move(side, column)
+                    self.make_move(side, column, emit_func)
                     return True
                 else:
                     print('player id does not match')

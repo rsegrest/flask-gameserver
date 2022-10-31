@@ -11,20 +11,23 @@ class TestModel:
         assert func(4) == 5
         
     # Test win conditions
-    # def test_is_board_full(self):
-    #     board = C4Model()
-    #     board.set_board([
-    #         [O,X,O],
-    #         [X,X,O],
-    #         [O,O,X]
-    #     ])
-    #     resultval = board.is_board_full()
-    #     winner = board.has_winner()
-    #     assert winner == False
-    #     assert resultval == True
+    def test_is_board_full(self):
+        board = C4Model()
+        board.set_board([
+            [B,R,B,B,R,B,B],
+            [B,R,B,B,R,B,B],
+            [R,B,R,R,B,R,R],
+            [R,B,R,R,B,R,R],
+            [R,B,R,R,B,R,R],
+            [B,R,B,B,R,B,B],
+        ])
+        resultval = board.is_board_full()
+        winner = board.has_winner()
+        assert winner == False
+        assert resultval == True
 
     # def test_has_diagonal_match_true(self):
-    #     board = TicTacToeModel()
+    #     board = C4Model()
     #     board.set_board([
     #         [X,O,O],
     #         [EMPTY,X,O],

@@ -138,7 +138,9 @@ def player_username(message):
     print('player_username')
     print('message', message)
     # if(my_arg is not None) and (my_arg != ''): print(my_arg)
-    if (connect4Game.num_players_registered() < 2):
+    num_players_registered = connect4Game.register_player(message['username'])
+    print('current number of players : ', num_players_registered)
+    if (num_players_registered < 2):
         print('assigning player')
         thisUsername = message['name']
         side_assigned = connect4Game.register_a_player(thisUsername, request.sid)
@@ -158,6 +160,8 @@ def player_username(message):
             start_game_func()
         print('returning True')
         return True
+    else:
+        print('more than two players already registered')
     return False
 @socketio.event
 def player_move(message):

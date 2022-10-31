@@ -1,0 +1,53 @@
+
+TODO: Verify that players are in the correct room
+
+DONE: "Current turn" on client display is null
+DONE: Current player's move is rejected (by server?)
+DONE: Status message not updating
+
+DONE: Verify that game turn changes between "B_TURN" and "R_TURN"?
+
+DONE: Test send move message
+DONE: Display client ID from server
+DONE: Include client ID in messages?
+
+
+DONE: Register player names
+DONE: ids with sides
+
+DONE?: Write tests for "try_move" in controller
+DONE?: Write tests for "make_move" in controller
+    - Should change board appropriately
+    - Should change turn appropriately
+
+DONE?: Test win
+DONE?: Test cats game
+
+DONE: Write tests for "is_space_empty" in controller
+DONE: Write tests for "is_turn_current" in controller
+
+DONE: Function to test B Player making a Move
+DONE: Function to test R Player trying to make a move when it is X's TURN
+DONE: Function to test R Player moving after X
+
+
+DONE: Function to test if board is full ("CATS" Game)
+DONE: Test diagonal matches
+DONE: Test horizontal matches
+DONE: Test vertical matches
+
+DONE?: Message to assign side black / red
+DONE?: Message to tx / rx moves
+DONE?: Message to send board
+DONE?: Message to change turn
+DONE?: Send Client request.sid upon connction
+
+TODO: Indication when it is your turn / not your turn 
+   - Change color or dim board?
+TODO: Separate into rooms
+TODO: Lobby function
+TODO: Separate actions from app.py
+
+DONE: Use namespace
+
+TODO: Restart game
