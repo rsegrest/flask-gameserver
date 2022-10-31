@@ -49,6 +49,7 @@ class C4Controller(): # Model):
 
     def is_turn_current(self, side):
         print('c4_cont--is_turn_current: '+str(side))
+        print('c4_cont--is_turn_current(status): '+str(self.model.game_status))
         if side+'_TURN' == self.model.game_status:
             return True
         return False
@@ -68,7 +69,7 @@ class C4Controller(): # Model):
 
     def get_lowest_empty_row(self, column):
         last_empty_row = None
-        for i in range(NUM_ROWS-1):
+        for i in range(NUM_ROWS):
             if self.model.board[i][column] == EMPTY:
                 last_empty_row = i
             else:
@@ -79,6 +80,7 @@ class C4Controller(): # Model):
         print('make_move: side: %s, column: %s' % (str(side), str(column)))
         # self.model.set_space(side, space)
         lowest_empty_row = self.get_lowest_empty_row(column)
+        print('lowest_empty_row: '+str(lowest_empty_row))
         self.model.set_space(side, [lowest_empty_row, column])
 
         is_winner = self.check_for_win()
@@ -146,9 +148,9 @@ class C4Controller(): # Model):
 
     def get_current_turn(self):
         if (self.model.game_status == B_TURN):
-            return X
+            return B
         elif (self.model.game_status == R_TURN):
-            return O
+            return R
         return None
 
     def set_current_turn(self, side):

@@ -65,21 +65,29 @@ class TestController:
         assert check_id_match_2 == False
         assert check_id_match_3 == False
     
-    # def test_try_move(self):
-    #     game = C4Controller()
-    #     model = C4Model()
-    #     playerBlack = C4PlayerModel("playerBlack", 1, B)
-    #     playerRed = C4PlayerModel("playerRed", 2, R)
+    def test_try_move(self):
+        game = C4Controller()
+        model = C4Model()
+        playerBlack = C4PlayerModel("playerBlack", 1, B)
+        playerRed = C4PlayerModel("playerRed", 2, R)
 
-    #     model.set_player_black(playerBlack)
-    #     model.set_player_red(playerRed)
-    #     game.set_model(model)
+        model.set_player_black(playerBlack)
+        model.set_player_red(playerRed)
+        model.start_game()
         
-    #     game.try_move(B,1,0)
-    #     NOT CORRECT -- FAILING
-    #     assert game.get_board_state()[0][0] == B
-    #     assert game.get_board_state()[0][1] == EMPTY
-    #     assert game.get_current_turn() == R
+        game.set_model(model)
+        
+        # try move ( side, player_id, col )
+        game.try_move(B,1,0)
+        print('printing board in test:')
+        
+        boardstate = game.model.board
+        for row in boardstate:
+            for col in row:
+                print(col, end=' ')
+        assert game.model.board[5][0] == B
+        assert game.model.board[5][1] == EMPTY
+        assert game.get_current_turn() == R
 
     # def test_cats(self):
         # game = Connect4Controller()

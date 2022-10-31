@@ -1,5 +1,5 @@
 from constants.spacestates import EMPTY, B, R
-from constants.gamestates import NOT_STARTED, B_TURN, R_TURN, B_WON, R_WON, DRAW, NUM_COLS, NUM_ROWS
+from constants.gamestates import NOT_STARTED, B_TURN, R_TURN, B_WON, R_WON, DRAW, NUM_COLS, NUM_ROWS, GAME_ABORTED
 
 from model.c4_player_model import C4PlayerModel
 # import json
@@ -91,10 +91,10 @@ class C4Model():
         self.board = board
 
     def start_game(self):
-        self.game_started = True
+        self.game_status = B_TURN
     
     def end_game(self):
-        self.game_started = False
+        self.game_status = DRAW
 
     def has_game_started(self):
         return self.game_status != NOT_STARTED
@@ -123,12 +123,13 @@ class C4Model():
         for row in range(NUM_ROWS):
             for col in range(NUM_COLS):
                 if self.board[row][col] == EMPTY:
-                    boardString += ' '
+                    boardString += '_'
                 elif self.board[row][col] == B:
                     boardString += 'B'
                 elif self.board[row][col] == R:
                     boardString += 'R'
             boardString += '\n'
+        print(boardString)
         return boardString
 
     def get_player_black(self):
@@ -158,9 +159,13 @@ class C4Model():
         self.player_red = player
 
     def set_space(self, side, space):
+        print("set_space: ")
+        print("side: %s" % side)
+        print("space: "+str(space[0])+", "+str(space[1]))
         row = int(space[0])
         col = int(space[1])
         self.board[row][col] = side
+        self.print_board()
         
     def get_player_names(self):
         return [self.player_black.name, self.player_red.name]
