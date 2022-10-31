@@ -1,7 +1,7 @@
 
-TODO: Associate some sort of window ID so that O can be separated from x
+DONE: Associate some sort of window ID so that O can be separated from x
 
-TODO: Display: X = [player1] / O = [player2]
+DONE: Display: X = [player1] / O = [player2]
 
 TODO: Prettier messages
 TODO: Register room name (static?)

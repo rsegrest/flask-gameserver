@@ -10,7 +10,10 @@ class TicTacToeController(): # Model):
         pass
     
     def set_model(self, model):
+        print('model arg board: '+str(model.board_to_string()))
         self.model = model
+        print('my board after assignment: '+str(self.model.board_to_string()))
+        
     
     def is_board_full(self):
         self.model.is_board_full()
@@ -26,7 +29,37 @@ class TicTacToeController(): # Model):
     
     def has_game_started(self):
         return self.model.has_game_started
-    
+
+    def register_player(self):
+        if (self.num_players_registered() < 2):
+            print('assigning player')
+            # thisUsername = message['name']
+            side_assigned = self.register_a_player(thisUsername, request.sid)
+            print('side_assigned', side_assigned)
+            emit('ack_player_username', {
+                'id': request.sid,
+                # 'username': tictactoeGame.get_player_names(), # [request.sid]})
+                'username': thisUsername,
+                'side': side_assigned, # [request.sid]
+            }, broadcast=True)
+            if (self.num_players_registered() == 2):
+                self.start_game_func()
+            print('returning True')
+            return True
+        return False
+
+    def start_game_func(self):
+        print('start_game: '+str(self.get_player_names()))
+        torf = False
+        if self.num_players_registered() == 2:
+            self.start_game()
+            if self.has_game_started():
+                torf = True
+        print('torf', torf)
+        emit('update_board', { 'board': self.model.board }, broadcast=True)
+        emit('update_game_status', {'status': self.model.game_status }, broadcast=True)
+        emit('ack_start_game', {'starting_game': str(torf)})
+
     def register_a_player(self, name, id):
         if self.model.player_x == None:
             self.model.player_x = TicTacToePlayerModel(name, id, X)
@@ -61,7 +94,10 @@ class TicTacToeController(): # Model):
         return self.model.has_winner()
 
     def check_for_draw(self):
-        return self.model.is_board_full()
+        print(self.model.print_board())
+        isFull = self.model.is_board_full()
+        print('check for draw: isFull: %s' % str(isFull))
+        return isFull
 
     def make_move(self, side, spacenum):
         print('make_move: side: %s, spacenum: %s' % (str(side), str(spacenum)))

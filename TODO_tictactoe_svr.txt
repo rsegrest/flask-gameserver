@@ -1,9 +1,12 @@
-TODO: Restart game
+TODO: Use namespace
+
 TODO: Indication when it is your turn / not your turn 
    - Change color or dim board?
 TODO: Separate into rooms
 TODO: Lobby function
+TODO: Separate actions from app.py
 
+DONE: Restart game
 DONE: "Current turn" on client display is null
 DONE: Current player's move is rejected (by server?)
 DONE: Status message not updating

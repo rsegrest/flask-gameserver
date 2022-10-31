@@ -70,8 +70,9 @@ class TestController:
 
         model.set_player_x(playerx)
         model.set_player_o(playero)
+        model.game_status = X_TURN
         game.set_model(model)
-        
+
         game.try_move(X,1,0)
         assert game.get_board_state()[0][0] == X
         assert game.get_board_state()[0][1] == EMPTY
@@ -88,16 +89,21 @@ class TestController:
             [O,X,O]
         ]
 
-        model.game_started = True
-        model.game_status = X_TURN
-        model.current_turn = X
+        # model.game_started = True
+        # model.game_status = X_TURN
+        # model.current_turn = X
 
         model.set_player_x(playerx)
         model.set_player_o(playero)
+        print('model before assignment: ', model.board_to_string())
+        # print('model before assignment : %s' %s model.print_board())
         game.set_model(model)
+        print('model after assignment: ', game.model.board_to_string())
         
+        # game.start_game()
+        model.game_status = X_TURN
         game.try_move(X,1,0)
-        assert game.get_board_state()[0][0] == X
+        assert game.model.board[0][0] == X
         assert game.model.game_status == DRAW
     
     def test_x_win(self):

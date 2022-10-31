@@ -136,29 +136,12 @@ def my_new_argument(my_arg=None):
 @socketio.event
 def player_username(message):
     print('player_username')
-    print('message', message)
-    # if(my_arg is not None) and (my_arg != ''): print(my_arg)
-    if (tictactoeGame.num_players_registered() < 2):
-        print('assigning player')
-        thisUsername = message['name']
-        side_assigned = tictactoeGame.register_a_player(thisUsername, request.sid)
-        print('side_assigned', side_assigned)
-        # TicTacToeModel.num_players_registered += 1
-        # TicTacToeModel.player_username = my_arg
-        # TicTacToeModel.player_id = request.sid
-        # print('player_username: ' + my_arg)
-        # emit('my_pong', {'id': request.sid})
-        emit('ack_player_username', {
-            'id': request.sid,
-            # 'username': tictactoeGame.get_player_names(), # [request.sid]})
-            'username': thisUsername,
-            'side': side_assigned, # [request.sid]
-        }, broadcast=True)
-        if (tictactoeGame.num_players_registered() == 2):
-            start_game_func()
-        print('returning True')
-        return True
-    return False
+    # print('message', message)
+    thisUserName = message['name']
+    returnVal = tictactoeGame.register_player(thisUserName)
+    return returnVal
+
+
 @socketio.event
 def player_move(message):
     print('player_move')
@@ -198,30 +181,18 @@ def player_room_chat(my_arg=None):
     if(my_arg is not None) and (my_arg != '') : print(my_arg)
     emit('ack_player_room_chat', my_arg)
 
+# TODO: Needs to return board state
 @socketio.event
 def get_board_state(my_arg=None):
     print('get_board_state')
     if(my_arg is not None) and (my_arg != '') : print(my_arg)
     emit('ack_get_board_state', my_arg)
 
-def start_game_func():
-    print('start_game: '+str(tictactoeGame.get_player_names()))
-    torf = False
-    if tictactoeGame.num_players_registered() == 2:
-        tictactoeGame.start_game()
-        if tictactoeGame.has_game_started():
-            torf = True
-    print('torf', torf)
-    emit('update_board', { 'board': tictactoeGame.model.board }, broadcast=True)
-    emit('update_game_status', {'status': tictactoeGame.model.game_status }, broadcast=True)
-    emit('ack_start_game', {'starting_game': str(torf)})
-
-# NO LONGER NEEDED
 @socketio.event
 def start_game(my_arg=None):
     print('start_game')
     if(my_arg is not None) and (my_arg != '') : print(my_arg)
-    start_game_func()
+    tictactoeGame.start_game_func()
 
 @socketio.event
 def connect(my_arg=None):

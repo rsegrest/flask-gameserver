@@ -1,7 +1,7 @@
+import json
 from constants.spacestates import EMPTY, X, O
 from constants.gamestates import NOT_STARTED, X_TURN, O_TURN, X_WON, O_WON, DRAW
 # from tictactoe_server.model.tic_player_model import TicTacToePlayerModel
-# import json
 
 class TicTacToeModel():
 
@@ -120,11 +120,15 @@ class TicTacToeModel():
     def set_room(self, roomname):
         self.room = roomname
 
+    def board_to_string(self):
+        return json.dumps(self.board)
+
     def print_board(self):
-        print("Board:")
-        print(self.board[0])
-        print(self.board[1])
-        print(self.board[2])
+        # print("Board:")
+        # print(self.board[0])
+        # print(self.board[1])
+        # print(self.board[2])
+        print(self.board_to_string())
 
     def get_player_x(self):
         if (self.player_x is None):
