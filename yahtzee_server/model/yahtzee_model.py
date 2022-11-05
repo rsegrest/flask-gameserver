@@ -1,3 +1,4 @@
+from yahtzee_server.model.yahtzee_player_model import YahtzeePlayerModel
 # from constants.spacestates import EMPTY, X, O
 from constants.gamestates import NOT_STARTED
 
