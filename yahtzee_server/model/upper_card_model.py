@@ -73,17 +73,25 @@ class UpperCardModel(object):
 
     def calculate_score(self):
         total = 0
-        total += UpperCardModel.calculate_ones_box_score
-        total += UpperCardModel.calculate_twos_box_score
-        total += UpperCardModel.calculate_threes_box_score
-        total += UpperCardModel.calculate_fours_box_score
-        total += UpperCardModel.calculate_fives_box_score
-        total += UpperCardModel.calculate_sixes_box_score
+        total += UpperCardModel.calculate_ones_box_score(self.ones_box)
+        total += UpperCardModel.calculate_twos_box_score(self.twos_box)
+        total += UpperCardModel.calculate_threes_box_score(self.threes_box)
+        total += UpperCardModel.calculate_fours_box_score(self.fours_box)
+        total += UpperCardModel.calculate_fives_box_score(self.fives_box)
+        total += UpperCardModel.calculate_sixes_box_score(self.sixes_box)
         return total
 
     def __str__(self):
-    #     pass
-        return "UpperCardModel"
+        return "Upper Card:\n\nOnes: {}\nTwos: {}\nThrees: {}\nFours: {}\nFives: {}\nSixes: {}\n\nTotal: {}".format(
+            self.ones_box,
+            self.twos_box,
+            self.threes_box,
+            self.fours_box,
+            self.fives_box,
+            self.sixes_box,
+            self.calculate_score()
+        )
+    
     
 if __name__ == "__main__":
     ucm = UpperCardModel()
