@@ -1,31 +1,29 @@
-from constants.spacestates import EMPTY, X, O
-from constants.gamestates import NOT_STARTED, X_TURN, O_TURN, X_WON, O_WON, DRAW
+from constants.gamestates import NOT_STARTED
 # import json
 
-class TicTacToePlayerModel(object):
+class YahtzeePlayerModel(object):
 
     def __init__(
         self,
         player_name = None,
+        player_num = None,
         player_id = None,
-        side = None
     ):
         self.name = player_name
+        self.player_num = player_num
         self.id = player_id
-        self.side = side
 
     def name(self):
-        return ("%s %s %s" % (self.name, self.id, self.side))
+        return ("%s %s %s" % (self.name, self.player_num, self.id))
     
     def get_name(self):
         return self.name
     
-    def get_side(self):
-        return self.side
+    def get_player_num(self):
+        return self.player_num
     
     def get_id(self):
         return self.id
-
 
     def set_name(self, name):
         self.name = name
@@ -34,12 +32,12 @@ class TicTacToePlayerModel(object):
         self.x_id = x_id
 
     def __str__(self):
-        return self.name + " " + self.id + " " + self.side
+        return self.name + " " + self.player_num + " " + self.id
     # @classmethod
     # def getAll(self):
     #     pass
     
 if __name__ == "__main__":
-    player = TicTacToePlayerModel()
+    player = YahtzeePlayerModel()
     player.print_player()
     pass
