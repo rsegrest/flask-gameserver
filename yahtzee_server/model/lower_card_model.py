@@ -56,41 +56,43 @@ class LowerCardModel(object):
 
     @staticmethod
     def calculate_three_of_a_kind_box_score(roll):
-        if YahtzeeModel.has_three_of_a_kind(roll):
+        if roll != None and YahtzeeModel.has_three_of_a_kind(roll):
             return sum(roll)
         return 0
 
     @staticmethod
     def calculate_four_of_a_kind_box_score(roll):
-        if YahtzeeModel.has_four_of_a_kind(roll):
+        if roll != None and YahtzeeModel.has_four_of_a_kind(roll):
             return sum(roll)
         return 0
 
     @staticmethod
     def calculate_yahtzee_box_score(roll):
-        if YahtzeeModel.has_yahtzee(roll):
+        if roll != None and YahtzeeModel.has_yahtzee(roll):
             return 50
         return 0
 
     @staticmethod
     def calculate_chance_box_score(roll):
-        return sum(roll)
+        if roll != None:
+            return sum(roll)
+        return 0
 
     @staticmethod
     def calculate_full_house_box_score(roll):
-        if YahtzeeModel.has_full_house(roll):
+        if roll != None and YahtzeeModel.has_full_house(roll):
             return 25
         return 0
 
     @staticmethod
     def calculate_small_straight_box_score(roll):
-        if YahtzeeModel.has_small_straight(roll):
+        if roll != None and YahtzeeModel.has_small_straight(roll):
             return 30
         return 0
 
     @staticmethod
     def calculate_large_straight_box_score(roll):
-        if YahtzeeModel.has_large_straight(roll):
+        if roll != None and YahtzeeModel.has_large_straight(roll):
             return 40
         return 0
 
@@ -106,8 +108,16 @@ class LowerCardModel(object):
         return total
 
     def __str__(self):
-    #     pass
-        return "LowerCardModel"
+        return "Lower Card:\n\n3 of a Kind: {}\n4 of a Kind: {}\nFull House: {}\nSmall Straight: {}\nLarge Straight: {}\nYahtzee: {}\nChance: {}\n\nTotal: {}".format(
+            self.three_of_a_kind_box,
+            self.four_of_a_kind_box,
+            self.full_house_box,
+            self.small_straight_box,
+            self.large_straight_box,
+            self.yahtzee_box,
+            self.chance_box,
+            self.calculate_score()
+        )
     
 if __name__ == "__main__":
     lcm = LowerCardModel()
