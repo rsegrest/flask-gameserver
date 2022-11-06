@@ -1,4 +1,6 @@
-import generic.model.dice as dice
+from generic.model.dice import Dice
+
+
 # from constants.spacestates import EMPTY, X, O
 def func(x):
     return x + 1
@@ -11,12 +13,12 @@ class TestDice:
     
     # Test 
     def test_init(self):
-        d = dice.Dice(10,2)
+        d = Dice(10,2)
         assert d.num_dice == 2
         assert d.num_sides == 10
 
     def test_roll(self):
-        d = dice.Dice(6,5)
+        d = Dice(6,5)
         result = d.roll()
         assert result['total'] >= 5
         assert result['total'] <= 30
@@ -27,11 +29,11 @@ class TestDice:
         assert len(result['rolls']) == 5
 
     def test_roll_result(self):
-        d = dice.Dice(6,5)
+        d = Dice(6,5)
         result = d.roll_result()
         assert result >= 5
         assert result <= 30
 
     def test_str(self):
-        d = dice.Dice(6,5)
+        d = Dice(6,5)
         assert str(d) == "5d6"
