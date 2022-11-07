@@ -78,7 +78,7 @@ class ConnectFourNamespace(Namespace):
 
     def on_disconnect_request(self):
         print('disconnect_request')
-        @copy_current_request_context
+        # @copy_current_request_context
         def can_disconnect(my_arg):
             print('can_disconnect')
             disconnect(my_arg=None)
