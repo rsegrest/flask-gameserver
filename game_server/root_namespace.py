@@ -26,12 +26,17 @@ def background_thread():
                       namespace='/test')
 
 
-@app.route('/')
-def index():
-    return render_template('index.html', async_mode=socketio.async_mode)
+# @app.route('/')
+# def index():
+#     return render_template('index.html', async_mode=socketio.async_mode)
 
 
-class MyNamespace(Namespace):
+class RootNamespace(Namespace):
+    def __init__(self, namespace, socketio):
+        super().__init__(namespace)
+        self.socketio = socketio
+        print('Root namespace init')
+
     def on_my_event(self, message):
         session['receive_count'] = session.get('receive_count', 0) + 1
         emit('my_response',
@@ -77,6 +82,7 @@ class MyNamespace(Namespace):
         disconnect()
 
     def on_my_ping(self):
+        print('on my ping')
         emit('my_pong')
 
     def on_connect(self):
@@ -90,7 +96,7 @@ class MyNamespace(Namespace):
         print('Client disconnected', request.sid)
 
 
-socketio.on_namespace(MyNamespace('/'))
+# socketio.on_namespace(MyNamespace('/'))
 
 
 if __name__ == '__main__':
