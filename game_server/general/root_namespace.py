@@ -15,15 +15,15 @@ thread = None
 thread_lock = Lock()
 
 
-def background_thread():
+def background_thread(self):
     """Example of how to send server generated events to clients."""
     count = 0
     while True:
         socketio.sleep(10)
         count += 1
-        socketio.emit('my_response',
+        self.socketio.emit('my_response',
                       {'data': 'Server generated event', 'count': count},
-                      namespace='/test')
+                      namespace='/')
 
 
 @app.route('/')
@@ -31,7 +31,15 @@ def index():
     return render_template('index.html', async_mode=socketio.async_mode)
 
 
-class MyNamespace(Namespace):
+class RootNamespace(Namespace):
+    
+    def __init__(self, namespace, socketio):
+        super().__init__(namespace)
+        self.socketio = socketio
+        # self.thread = thread
+        # self.thread_lock = thread_lock
+        # super().__init__('/')
+
     def on_my_event(self, message):
         session['receive_count'] = session.get('receive_count', 0) + 1
         emit('my_response',
@@ -84,15 +92,23 @@ class MyNamespace(Namespace):
         global thread
         with thread_lock:
             if thread is None:
-                thread = socketio.start_background_task(background_thread)
+                thread = self.socketio.start_background_task(background_thread)
         emit('my_response', {'data': 'Connected', 'count': 0})
 
     def on_disconnect(self):
         print('Client disconnected', request.sid)
 
+    def on_register_user(self, message):
+        username = message['username']
+        password = message['password']
+        # emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
+        #                      'count': session['receive_count']},
+        #      room=message['room'])
+        print('register user', username, password)
 
-socketio.on_namespace(MyNamespace('/'))
+
+# socketio.on_namespace(RootNamespace('/'))
 
 
-if __name__ == '__main__':
-    socketio.run(app)
+# if __name__ == '__main__':
+#     socketio.run(app)

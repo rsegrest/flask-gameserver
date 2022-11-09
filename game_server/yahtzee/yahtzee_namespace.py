@@ -10,18 +10,18 @@ async_mode = None
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, async_mode=async_mode)
+# socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
 
 
-def background_thread():
+def background_thread(self):
     """Example of how to send server generated events to clients."""
     count = 0
     while True:
-        socketio.sleep(10)
+        self.socketio.sleep(10)
         count += 1
-        socketio.emit('my_response',
+        self.socketio.emit('my_response',
                       {'data': 'Server generated event', 'count': count},
                       namespace='/test')
 
@@ -31,7 +31,7 @@ def background_thread():
 #     return render_template('index.html', async_mode=socketio.async_mode)
 
 
-class RootNamespace(Namespace):
+class YahtzeeNamespace(Namespace):
     def __init__(self, namespace, socketio):
         super().__init__(namespace)
         self.socketio = socketio
@@ -89,7 +89,7 @@ class RootNamespace(Namespace):
         global thread
         with thread_lock:
             if thread is None:
-                thread = socketio.start_background_task(background_thread)
+                thread = self.socketio.start_background_task(background_thread(self))
         emit('my_response', {'data': 'Connected', 'count': 0})
 
     def on_disconnect(self):
