@@ -1,4 +1,5 @@
 from general.root_namespace import RootNamespace
+from general.background_thread import background_thread, async_mode, thread, thread_lock
 from chatroom.chatroom_namespace import ChatroomNamespace
 from tictactoe.tictactoe_namespace import TicTacToeNamespace
 from yahtzee.yahtzee_namespace import YahtzeeNamespace
@@ -16,11 +17,13 @@ async_mode = None
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 
+
 # socketio = SocketIO(app, async_mode=async_mode)
 socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
-socketio.on_namespace(RootNamespace('/', socketio))
-socketio.on_namespace(ChatroomNamespace('/chatroom', socketio))
-socketio.on_namespace(TicTacToeNamespace('/tictactoe', socketio))
+socketio.on_namespace(RootNamespace('/', si=socketio))
+# socketio.on_namespace(RootNamespace('/', socketio))
+# socketio.on_namespace(ChatroomNamespace('/chatroom', socketio))
+# socketio.on_namespace(TicTacToeNamespace('/tictactoe', socketio))
 # socketio.on_namespace(ConnectFourNamespace('/connectfour', socketio))
 # socketio.on_namespace(YahtzeeNamespace('/yahtzee', socketio))
 socketio.run(app)

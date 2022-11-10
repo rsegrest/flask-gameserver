@@ -1,4 +1,5 @@
 from threading import Lock
+from general.background_thread import background_thread, async_mode, thread, thread_lock
 from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, Namespace, emit, join_room, leave_room, \
     close_room, rooms, disconnect
@@ -6,39 +7,25 @@ from flask_socketio import SocketIO, Namespace, emit, join_room, leave_room, \
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
 # the best option based on installed packages.
-async_mode = None
+# async_mode = None
+# thread = None
+# thread_lock = Lock()
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, async_mode=async_mode)
-thread = None
-thread_lock = Lock()
-
-
-def background_thread(self):
-    """Example of how to send server generated events to clients."""
-    count = 0
-    while True:
-        socketio.sleep(10)
-        count += 1
-        self.socketio.emit('my_response',
-                      {'data': 'Server generated event', 'count': count},
-                      namespace='/')
+# app = Flask(__name__)
+# app.config['SECRET_KEY'] = 'secret!'
+# socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
 
 
-@app.route('/')
-def index():
-    return render_template('index.html', async_mode=socketio.async_mode)
+# @app.route('/')
+# def index():
+#     return render_template('index.html', async_mode=socketio.async_mode)
 
 
 class RootNamespace(Namespace):
     
-    def __init__(self, namespace, socketio):
+    def __init__(self, namespace, si):
         super().__init__(namespace)
-        self.socketio = socketio
-        # self.thread = thread
-        # self.thread_lock = thread_lock
-        # super().__init__('/')
+        self.socketio = si
 
     def on_my_event(self, message):
         session['receive_count'] = session.get('receive_count', 0) + 1
@@ -88,27 +75,28 @@ class RootNamespace(Namespace):
         print('on my ping')
         emit('my_pong')
 
-    def on_connect(self):
+    def on_connect(self, *args):
+        print('Connected', request.sid, args)
         global thread
         with thread_lock:
             if thread is None:
                 thread = self.socketio.start_background_task(background_thread)
-        emit('my_response', {'data': 'Connected', 'count': 0})
+        self.socketio.emit('my_response', {'data': 'Connected', 'count': 0})
 
     def on_disconnect(self):
         print('Client disconnected', request.sid)
 
-    def on_register_user(self, message):
-        username = message['username']
-        password = message['password']
+    def on_register_username(self, message):
+        print('on_register_username', message)
+        # username = message['username']
+        # password = message['password']
         # emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
         #                      'count': session['receive_count']},
         #      room=message['room'])
-        print('register user', username, password)
+        # print('register user', username, password)
 
 
 # socketio.on_namespace(RootNamespace('/'))
-
 
 # if __name__ == '__main__':
 #     socketio.run(app)

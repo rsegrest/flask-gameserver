@@ -2,6 +2,7 @@ from threading import Lock
 from flask import Flask, copy_current_request_context, session, request
 # , render_template, session,
 from flask_socketio import Namespace, join_room, leave_room, emit, SocketIO, disconnect, close_room, rooms
+from general.background_thread import background_thread, async_mode, thread, thread_lock
 
 from tictactoe.constants.spacestates import EMPTY, X, O
 from tictactoe.controller.tictactoe_controller import TicTacToeController
@@ -14,15 +15,15 @@ thread = None
 thread_lock = Lock()
 
 
-# def background_thread():
-#     """Example of how to send server generated events to clients."""
-#     count = 0
-#     while True:
-#         socketio.sleep(10)
-#         count += 1
-#         socketio.emit('my_response',
-#                       {'data': 'Server generated event', 'count': count},
-#                       namespace='/tictactoe')
+def background_thread(self):
+    """Example of how to send server generated events to clients."""
+    count = 0
+    while True:
+        self.socketio.sleep(10)
+        count += 1
+        self.socketio.emit('my_response',
+                      {'data': 'Server generated event', 'count': count},
+                      namespace='/tictactoe')
 
 class TicTacToeNamespace(Namespace):
     # tictactoeGame = TicTacToeController()
@@ -106,7 +107,7 @@ class TicTacToeNamespace(Namespace):
         global thread
         with thread_lock:
             if thread is None:
-                thread = self.socketio.start_background_task(background_thread)
+                thread = self.socketio.start_background_task(background_thread(self))
         emit('my_response', {'data': 'Connected', 'count': 0})
             
     def on_disconnect(self, my_arg=None):
