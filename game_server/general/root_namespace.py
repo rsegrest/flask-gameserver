@@ -3,6 +3,7 @@ from general.background_thread import background_thread, async_mode, thread, thr
 from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, Namespace, emit, join_room, leave_room, \
     close_room, rooms, disconnect
+from general.model.user_model import UserModel as User
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -88,6 +89,13 @@ class RootNamespace(Namespace):
 
     def on_register_username(self, message):
         print('on_register_username', message)
+        print('id : ', request.sid)
+        username = message['name']
+        uid = request.sid
+        user = User(user_name=username, user_id=uid)
+        print('user to string : ' + str(user))
+        # Add to user list
+        
         # username = message['username']
         # password = message['password']
         # emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',

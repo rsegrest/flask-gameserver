@@ -4,14 +4,18 @@ class UserModel():
 
     def __init__(self, user_name, user_id=None, user_email=None, user_last_name=None, user_first_name=None):
         self.user_name = user_name
+        if not hasattr(self, 'user_ids'):
+            self.user_ids = []
         if (user_id is None):
-            self.user_id = random.randint(1, 1000000000)
+            self.user_ids.append(random.randint(1, 1000000000))
+        else:
+            self.user_ids.append(user_id)
         self.user_email = user_email
         self.user_last_name = user_last_name
         self.user_first_name = user_first_name
 
     def __str__(self):
-        output_string = "User Name: " + self.user_name + "\n\tUser ID: " + str(self.user_id)
+        output_string = "User Name: " + self.user_name + "\n\tUser ID: " + str(self.user_ids)
         if (self.user_email is not None):
             output_string += "\n\tEmail: " + self.user_email
         if (self.user_last_name is not None):
