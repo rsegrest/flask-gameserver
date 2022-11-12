@@ -2,6 +2,8 @@ from threading import Lock
 from flask import Flask, copy_current_request_context, session, request
 # , render_template, session,
 from flask_socketio import Namespace, join_room, leave_room, emit, SocketIO, disconnect, close_room, rooms
+from chatroom.model.message_list_model import MessageListModel
+from chatroom.model.message_model import MessageModel
 
 # from tictactoe.constants.spacestates import EMPTY, X, O
 # from tictactoe.controller.tictactoe_controller import TicTacToeController
@@ -30,9 +32,28 @@ class ChatroomNamespace(Namespace):
     def __init__(self, namespace, socketio):
         super().__init__(namespace)
         socketio = socketio
-        # self....Game = ...Controller()
+        self.message_list = MessageListModel()
         print('Chatroom namespace init')
 
+# ('request_messages')
+#     }
+#     sendRequestUsersInRoom = () => {
+#         console.log('sending request users in room')
+#         this.socket.emit('request_users_in_room')
+    
+    # CURRENTLY SENT TO ROOT NAMESPACE -- THIS IS NOT USED
+    def on_request_messages(self, my_arg=None):
+        print('request_messages')
+        if(my_arg is not None) and (my_arg != '') : print(my_arg)
+        # emit('message_list', self.message_list)
+        emit('message_list', 'a message list')
+    
+    # CURRENTLY SENT TO ROOT NAMESPACE -- THIS IS NOT USED
+    def on_request_users_in_room(self, my_arg=None):
+        print('request_users_in_room')
+        if(my_arg is not None) and (my_arg != '') : print(my_arg)
+        # emit('message_list', self.message_list)
+        emit('user_list', 'a user list')
 
     def on_my_ping(message, my_arg=None):
         if(my_arg is not None) and (my_arg != '') : print(my_arg)

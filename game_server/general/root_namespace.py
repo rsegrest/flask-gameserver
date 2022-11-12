@@ -4,6 +4,7 @@ from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, Namespace, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 from general.model.user_model import UserModel as User
+from chatroom.model.message_list_model import MessageListModel
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -27,6 +28,7 @@ class RootNamespace(Namespace):
     def __init__(self, namespace, si):
         super().__init__(namespace)
         self.socketio = si
+        self.message_list_model = MessageListModel()
 
     def on_my_event(self, message):
         session['receive_count'] = session.get('receive_count', 0) + 1
@@ -95,7 +97,16 @@ class RootNamespace(Namespace):
         user = User(user_name=username, user_id=uid)
         print('user to string : ' + str(user))
         # Add to user list
-        
+
+    def on_request_users_in_room(self):
+        print('on_request_users_in_room')
+        self.socketio.emit('users', {'users': ['user1', 'user2']})
+    
+    def on_request_messages(self):
+        print('on_request_messages')
+        message_list = self.message_list_model.get_message_list()
+        print('message_list is currently : ', message_list)
+        self.socketio.emit('messages', {'messages': message_list})
         # username = message['username']
         # password = message['password']
         # emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
