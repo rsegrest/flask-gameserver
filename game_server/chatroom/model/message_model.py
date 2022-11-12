@@ -53,13 +53,14 @@ class MessageModel():
     def get_to_user(self):
         return self.to_user
     
+    # TODO: Handle single and double quotes in content
     def convert_to_json(self):
-        return json.dumps({
-            'user_id': self.user_id,
-            'user_name': self.user_name,
-            'content': self.content,
-            'timestamp': str(self.timestamp)
-        })
+        return {
+            "user_id": self.user_id,
+            "user_name": self.user_name,
+            "content": self.content,
+            "timestamp": str(self.timestamp)
+        }
 
 if __name__ == "__main__":
     message = MessageModel()
