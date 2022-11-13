@@ -1,10 +1,15 @@
+import sys
 from threading import Lock
-from general.background_thread import background_thread, async_mode, thread, thread_lock
+# from general.background_thread import background_thread, async_mode, thread, thread_lock
 from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, Namespace, emit, join_room, leave_room, \
     close_room, rooms, disconnect
+    
+sys.path.append('..')
 from general.model.user_model import UserModel as User
+# from model.user_model import UserModel as User
 from chatroom.model.message_list_model import MessageListModel
+from threading import Lock
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -13,21 +18,37 @@ from chatroom.model.message_list_model import MessageListModel
 # thread = None
 # thread_lock = Lock()
 
-# app = Flask(__name__)
-# app.config['SECRET_KEY'] = 'secret!'
-# socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
-
 
 # @app.route('/')
 # def index():
 #     return render_template('index.html', async_mode=socketio.async_mode)
 
 
+global socketio
+async_mode = None
+thread = None
+thread_lock = Lock()
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
+
+
+def background_thread(): # (socketio):
+    """Example of how to send server generated events to clients."""
+    count = 0
+    while True:
+        socketio.sleep(10)
+        count += 1
+        socketio.emit('my_response',
+                      {'data': 'Server generated event', 'count': count},
+                      namespace='/')
+
 class RootNamespace(Namespace):
     
-    def __init__(self, namespace, si):
+    def __init__(self, namespace, si=None):
         super().__init__(namespace)
-        self.socketio = si
+        # self.socketio = si
         self.message_list_model = MessageListModel()
 
     def on_my_event(self, message):
@@ -83,12 +104,13 @@ class RootNamespace(Namespace):
     def on_connect(self, *args):
         print('Connected', request.sid, args)
         # TODO: This is causing an error (?) -- figure out how to fix
-        # global thread
-        # with thread_lock:
-        #     if thread is None:
-        #         print('Creating thread')
-        #         thread = self.socketio.start_background_task(background_thread(socketio=self.socketio))
-        # self.socketio.emit('my_response', {'data': 'Connected', 'count': 0})
+        global thread
+        with thread_lock:
+            if thread is None:
+                print('Creating thread')
+                # thread = self.socketio.start_background_task(background_thread(socketio=self.socketio))
+                thread = socketio.start_background_task(background_thread)
+        socketio.emit('my_response', {'data': 'Connected', 'count': 0})
 
     def on_disconnect(self):
         print('Client disconnected', request.sid)
@@ -110,7 +132,8 @@ class RootNamespace(Namespace):
         print('on_request_messages')
         message_list = self.message_list_model.get_message_list()
         print('message_list is currently : ', message_list)
-        self.socketio.emit('messages', {'messages': message_list})
+        # self.socketio.emit('messages', {'messages': message_list})
+        socketio.emit('messages', {'messages': message_list})
         # username = message['username']
         # password = message['password']
         # emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
@@ -119,7 +142,7 @@ class RootNamespace(Namespace):
         # print('register user', username, password)
 
 
-# socketio.on_namespace(RootNamespace('/'))
+socketio.on_namespace(RootNamespace('/'))
 
-# if __name__ == '__main__':
-#     socketio.run(app)
+if __name__ == '__main__':
+    socketio.run(app, debug=True)

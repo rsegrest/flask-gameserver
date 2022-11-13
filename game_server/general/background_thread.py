@@ -1,6 +1,6 @@
 from threading import Lock
 
-global socketio
+# global socketio
 async_mode = None
 thread = None
 thread_lock = Lock()
