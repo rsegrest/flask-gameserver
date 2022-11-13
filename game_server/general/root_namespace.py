@@ -69,10 +69,12 @@ class RootNamespace(Namespace):
              room=message['room'])
 
     def on_disconnect_request(self):
+        print('on_disconnect_request')
         session['receive_count'] = session.get('receive_count', 0) + 1
         emit('my_response',
              {'data': 'Disconnected!', 'count': session['receive_count']})
         disconnect()
+        print('disconnected')
 
     def on_my_ping(self):
         print('on my ping')
@@ -80,11 +82,13 @@ class RootNamespace(Namespace):
 
     def on_connect(self, *args):
         print('Connected', request.sid, args)
-        global thread
-        with thread_lock:
-            if thread is None:
-                thread = self.socketio.start_background_task(background_thread)
-        self.socketio.emit('my_response', {'data': 'Connected', 'count': 0})
+        # TODO: This is causing an error (?) -- figure out how to fix
+        # global thread
+        # with thread_lock:
+        #     if thread is None:
+        #         print('Creating thread')
+        #         thread = self.socketio.start_background_task(background_thread(socketio=self.socketio))
+        # self.socketio.emit('my_response', {'data': 'Connected', 'count': 0})
 
     def on_disconnect(self):
         print('Client disconnected', request.sid)
