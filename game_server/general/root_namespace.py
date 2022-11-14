@@ -7,8 +7,10 @@ from flask_socketio import SocketIO, Namespace, emit, join_room, leave_room, \
     
 sys.path.append('..')
 from general.model.user_model import UserModel as User
-# from model.user_model import UserModel as User
-from chatroom.model.message_list_model import MessageListModel
+from chatroom.model.message_list_model import MessageListModel as MessageList
+from general.model.game_session_model import GameSessionModel as GameSession
+from general.model.server_session_model import ServerSessionModel as ServerSession
+
 from threading import Lock
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
@@ -48,8 +50,9 @@ class RootNamespace(Namespace):
     
     def __init__(self, namespace, si=None):
         super().__init__(namespace)
-        # self.socketio = si
-        self.message_list_model = MessageListModel()
+        self.game_session = GameSession('THE_LOBBY', 'CHAT_ROOM')
+        self.server_session = ServerSession()
+        self.message_list = MessageList()
 
     def on_my_event(self, message):
         session['receive_count'] = session.get('receive_count', 0) + 1
@@ -103,7 +106,6 @@ class RootNamespace(Namespace):
 
     def on_connect(self, *args):
         print('Connected', request.sid, args)
-        # TODO: This is causing an error (?) -- figure out how to fix
         global thread
         with thread_lock:
             if thread is None:
@@ -126,20 +128,26 @@ class RootNamespace(Namespace):
 
     def on_request_users_in_room(self):
         print('on_request_users_in_room')
-        self.socketio.emit('users', {'users': ['user1', 'user2']})
+        self.socketio.emit('users', {'users': self.game_session.get_player_list()})
+    
+    def on_request_games_available(self):
+        print('on_request_games_available')
+        self.socketio.emit('games', {'games': self.server_session.get_game_types_list()})
     
     def on_request_messages(self):
         print('on_request_messages')
-        message_list = self.message_list_model.get_message_list()
+        message_list = self.message_list.get_message_list()
         print('message_list is currently : ', message_list)
-        # self.socketio.emit('messages', {'messages': message_list})
         socketio.emit('messages', {'messages': message_list})
-        # username = message['username']
-        # password = message['password']
-        # emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
-        #                      'count': session['receive_count']},
-        #      room=message['room'])
-        # print('register user', username, password)
+        
+    def on_send_chat_message(self, message):
+        print('on_send_chat_message')
+        print('message is : ', message)
+        self.message_list.add_message(
+            username=message['user_name'],
+            content=message['content']
+        )
+        socketio.emit('message_list_update', {'messages': self.message_list.get_message_list()})
 
 
 socketio.on_namespace(RootNamespace('/'))

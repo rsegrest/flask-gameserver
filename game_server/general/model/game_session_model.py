@@ -3,7 +3,16 @@ from datetime import datetime
 
 class GameSessionModel():
 
-    def __init__(self, room_name, game_type, player_list=[]):
+    def __init__(
+        self,
+        room_name,
+        game_type,
+        player_list=[
+            'P1 in Lobby',
+            'P2 in Lobby',
+            'P3 in Lobby'
+        ]
+    ):
         self.room_name = room_name
         self.game_type = game_type
         self.player_list = player_list

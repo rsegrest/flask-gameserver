@@ -61,6 +61,9 @@ class MessageModel():
             "content": self.content,
             "timestamp": str(self.timestamp)
         }
+    
+    def __str__(self) -> str:
+        return json.dumps(self.convert_to_json())
 
 if __name__ == "__main__":
     message = MessageModel()

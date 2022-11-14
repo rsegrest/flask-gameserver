@@ -9,5 +9,5 @@ def get_sample_message_list():
     msg6 = MessageModel(user_id='124', user_name='tricky', content='Everybody be quiet', room='room1')
     msg7 = MessageModel(user_id='127', user_name='charlie_mae', content='WAH!', room='room1')
     message_list = [msg1, msg2, msg3, msg4, msg5, msg6, msg7]
-    
+
     return message_list
