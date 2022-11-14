@@ -7,20 +7,13 @@ from flask_socketio import (Namespace, SocketIO, close_room, disconnect, emit,
                             join_room, leave_room, rooms)
 
 sys.path.append('..')
-<<<<<<< HEAD
 from threading import Lock
 
-# from model.user_model import UserModel as User
-from chatroom.model.message_list_model import MessageListModel
-from general.model.user_model import UserModel as User
-=======
-from general.model.user_model import UserModel as User
 from chatroom.model.message_list_model import MessageListModel as MessageList
 from general.model.game_session_model import GameSessionModel as GameSession
-from general.model.server_session_model import ServerSessionModel as ServerSession
-
-from threading import Lock
->>>>>>> 7b3dc5e23fedf7824db329c1f4de576b8c654017
+from general.model.server_session_model import \
+    ServerSessionModel as ServerSession
+from general.model.user_model import UserModel as User
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
