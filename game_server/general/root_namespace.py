@@ -1,17 +1,19 @@
 import sys
 from threading import Lock
+
 # from general.background_thread import background_thread, async_mode, thread, thread_lock
-from flask import Flask, render_template, session, request
-from flask_socketio import SocketIO, Namespace, emit, join_room, leave_room, \
-    close_room, rooms, disconnect
-    
+from flask import Flask, render_template, request, session
+from flask_socketio import (Namespace, SocketIO, close_room, disconnect, emit,
+                            join_room, leave_room, rooms)
+
 sys.path.append('..')
-from general.model.user_model import UserModel as User
+from threading import Lock
+
 from chatroom.model.message_list_model import MessageListModel as MessageList
 from general.model.game_session_model import GameSessionModel as GameSession
-from general.model.server_session_model import ServerSessionModel as ServerSession
-
-from threading import Lock
+from general.model.server_session_model import \
+    ServerSessionModel as ServerSession
+from general.model.user_model import UserModel as User
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -33,7 +35,7 @@ thread_lock = Lock()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*")
+socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins="*", logger=True, engineio_logger=True)
 
 
 def background_thread(): # (socketio):
