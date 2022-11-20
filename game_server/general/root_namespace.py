@@ -138,7 +138,7 @@ class RootNamespace(Namespace):
         print('on_request_messages')
         message_list = self.message_list.get_message_list()
         print('message_list is currently : ', message_list)
-        socketio.emit('messages', {'messages': message_list})
+        self.socketio.emit('messages', {'messages': message_list})
         
     def on_send_chat_message(self, message):
         print('on_send_chat_message')
@@ -147,7 +147,8 @@ class RootNamespace(Namespace):
             username=message['user_name'],
             content=message['content']
         )
-        socketio.emit('message_list_update', {'messages': self.message_list.get_message_list()})
+        self.socketio.emit('message_list_update', {'messages': self.message_list.get_message_list()})
+        # self.socketio.emit('messages', {'messages': self.message_list.get_message_list()})
 
 
 socketio.on_namespace(RootNamespace('/'))
